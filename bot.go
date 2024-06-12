@@ -179,7 +179,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to read cosoutput.json: %v", err)
 	}
-
+	fmt.Println(len(me))
 	// 合并两个账户列表
 	allAccounts := append(inputAccounts, outputAccounts...)
 	client, err := ethclient.Dial(infuraURL)
@@ -197,7 +197,7 @@ func main() {
 	gravityAddress := common.HexToAddress(approveAddress)
 	amount := big.NewInt(2000000000000000000) // 1 token, assuming 18 decimal places
 
-	for _, account := range allAccounts[:1] {
+	for _, account := range allAccounts {
 		// 使用当前时间的Unix时间戳作为种子值
 		rand.Seed(time.Now().UnixNano())
 		randomNumber := rand.Intn(10)
@@ -225,8 +225,9 @@ func main() {
 		auth.Value = big.NewInt(0)     // in wei
 		auth.GasLimit = uint64(300000) // in units
 		auth.GasPrice = gasPrice
+
 		//func (_Gravity *GravityTransactor) SendToCosmos(opts *bind.TransactOpts, _tokenContract common.Address, _destination string, _amount *big.Int) (*types.Transaction, error) {
-		input, err := parsedABI.Pack("sendToCosmos", erc20Address, me[randomNumber], amount)
+		input, err := parsedABI.Pack("sendToCosmos", erc20Address, me[randomNumber].Address, amount)
 		if err != nil {
 			log.Fatalf("Failed to pack input data: %v", err)
 		}
